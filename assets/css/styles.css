@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bs-primary: #1a1a1a;
+    --bs-font-sans-serif: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-body-font-size: 1rem;
+    --bs-body-font-weight: 400;
+    --bs-body-line-height: 1.5;
+    --bs-body-color: #55595c;
+    --bs-body-bg: #fff;
+    --gold-color: #CBAB01;
+    --primary-color: #B38B59;
+}
+
+.pd-50 {
+    margin-top: 50px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--bs-body-font-family) !important;
+  font-size: var(--bs-body-font-size);
+  font-weight: var(--bs-body-font-weight) !important;
+  line-height: var(--bs-body-line-height);
+  color: var(--bs-body-color);
+  text-align: var(--bs-body-text-align);
+  background-color: var(--bs-body-bg);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.bg-gold {
+    background-color: var(--gold-color) !important;
+}
+
+#home, #account {
+    display: flex; /* establish flex container */
+    flex-direction: column; /* make main-axis vertical */
+    justify-content: center; /* align items vertically, in this case */
+    align-items: center; /* align items horizontally, in this case */
+    height: 95vH;
+    width: 100vW;
+}
+
+#account {
+    height: 80vH !important;
+}
+
+.logo .center {
+    display: flex; /* establish flex container */
+    flex-direction: column; /* make main-axis vertical */
+    justify-content: center; /* align items vertically, in this case */
+    align-items: left; /* align items horizontally, in this case */
+    height: 100px;
+}
+
+#account .container .row a {
+    text-decoration: none !important;
+}
+
+#account .container .row .card {
+    background-color: var(--bs-body-color);
+    padding: 50px 0 50px 0;
+    color: var(--bs-body-bg);
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#account .container .row .card:hover {
+    background-color: var(--gold-color);
+}
+
+#account .container .row .card i {
+    height: 60px;
+}
+
+.offcanvas .offcanvas-body ul li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 50px;
+    background-color: var(--bs-body-color);
+    list-style: none;
+    margin-bottom: 10px;
+    columns: var(--bs-body-bg);
+    padding-left: 10px;
+}
+
+.offcanvas .offcanvas-body ul li:hover {
+    background-color: var(--gold-color);
+}
+
+.offcanvas .offcanvas-body ul li a {
+    text-decoration: none;
+    color: var(--bs-body-bg);
+}
+
+.logo img {
+    height: 100px;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.logo .title, .logo .subtitle {
+    margin-left: 10px;
+    bottom: 0;
+}
+
+.padding-50 {
+    padding: 50px;
+}
+
+.margin-50 {
+    margin: 50px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 900 !important;
+}
+
+.subtitle {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.login-form p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.login-form p a {
+    font-weight: 700 !important;
+    text-decoration: none;
+}
+
+.table-responsive table {
+    width: 100%;
+}
+
+footer .copyright {
+    text-align: center;
+}
