@@ -9,11 +9,24 @@ $staffId = $_SESSION['id'];
 $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
+
+if (isset($_GET['update_record'])) {
+  $info = $_GET['update_record'];
+  $query = "SELECT * FROM `records` WHERE `sr_no` = '$info'";
+  $select = $mysqli->query($query) or die($mysqli->error.__LINE__);
+  $data = mysqli_fetch_assoc($select);
+  $u_guardian = $data['guardian'];
+  $u_g_name = $data['g_name'];
+  $u_g_grade = $data['g_grade'];
+  $u_g_class = $data['g_class'];
+  $u_re_entry_date = $data['re_entry_date'];
+  $u_date_issued = $data['date_issued'];
+}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Add Record | Re-Entry Policy Tracking System</title>
+  <title><?php if (isset($_GET['update_record'])) { echo 'Update Record'; } else { echo 'Add Record'; } ?> | Re-Entry Policy Tracking System</title>
   <!-- CSS only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link href="assets/css/styles.css" rel="stylesheet">
@@ -65,6 +78,12 @@ $username = $_SESSION['username'];
           <a href="status.php"><i icon-name="line-chart"></i> Status</a>
         </li>
         <li>
+          <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
+        </li>
+        <li>
+          <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
+        </li>
+        <li>
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
         <li>
@@ -94,19 +113,21 @@ $username = $_SESSION['username'];
               </div>
             <?php } ?>
             <form method="post">
+              <input type="hidden" name="sr_no" value="<?php echo $info; ?>">
               <div class="form-group">
                 <label class="form-label mt-4">Parent/Guardian</label>
-                <input type="text" name="guardian" class="form-control" placeholder="Enter name" required>
+                <input type="text" name="guardian" class="form-control" placeholder="Enter name" value="<?php echo $u_guardian; ?>" required>
               </div>
               <div class="form-group">
                 <label class="form-label mt-4">Girl name</label>
-                <input type="text" name="g_name" class="form-control" placeholder="Enter name" required>
+                <input type="text" name="g_name" class="form-control" placeholder="Enter name" value="<?php echo $u_g_name; ?>" required>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="form-label mt-4">Grade</label>
                     <select name="g_grade" id="grade" class="form-control">
+                      <option><?php echo $u_g_grade; ?></option>
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -125,7 +146,7 @@ $username = $_SESSION['username'];
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="form-label mt-4">Class</label>
-                    <input type="text" name="g_class" class="form-control" placeholder="Enter class" required>
+                    <input type="text" name="g_class" class="form-control" placeholder="Enter class" value="<?php echo $u_g_class; ?>" required>
                   </div>
                 </div>
               </div>
@@ -133,18 +154,22 @@ $username = $_SESSION['username'];
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="form-label mt-4">Date Issued</label>
-                    <input type="text" name="date_issued" class="form-control" value="<?php echo date('Y-m-d'); ?>" readonly>
+                    <input type="date" name="date_issued" class="form-control" value="<?php if(isset($_GET['update_record'])){ echo $u_date_issued; } else { echo date('Y-m-d'); } ?>" <?php if(!isset($_GET['update_record'])){ echo "readonly"; } ?>>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="form-label mt-4">Re-Admission Date</label>
-                    <input type="date" name="re_entry_date" class="form-control" placeholder="Enter date" required>
+                    <input type="date" name="re_entry_date" class="form-control" placeholder="Enter date" value="<?php echo $u_re_entry_date; ?>" required>
                   </div>
                 </div>
               </div>
               <br>
-              <input type="submit" name="add-record" class="btn btn-primary form-control" value="Add Record">
+              <?php if (isset($_GET['update_record'])) { ?>
+                <input type="submit" name="update-record" class="btn btn-success form-control" value="Update Record">
+                 <?php } else { ?>
+                  <input type="submit" name="add-record" class="btn bg-gold text-white form-control" value="Add Record">
+               <?php } ?>
             </form>
           </div>
         </div>

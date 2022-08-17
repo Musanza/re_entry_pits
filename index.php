@@ -22,7 +22,7 @@ include_once 'database/config.php';
                         </div>
                         <div class="col-md-8 center">
                             <div class="title">Re-Entry Policy Tracking System</div>
-                            <div class="subtitle"><i>Case study</i></div>
+                            <div class="subtitle text-gold"><i>Case study</i></div>
                         </div>
                     </div>
                     <div class="login-form">
@@ -45,8 +45,8 @@ include_once 'database/config.php';
                               <label for="inputPassword" class="form-label mt-4">Password</label>
                               <input type="password" name="password" class="form-control" id="inputPassword" aria-describedby="passwordHelp" placeholder="Enter password" required>
                           </div>
-                          <p><a href="reset.php">Forgot Password?</a></p>
-                          <input type="submit" name="login" class="btn btn-primary form-control" value="Login">
+                          <p><a href="reset.php" class="text-gold">Forgot Password?</a></p>
+                          <input type="submit" name="login" class="btn bg-gold text-white form-control" value="Login">
                       </form>
                   </div>
               </div>

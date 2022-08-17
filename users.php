@@ -10,24 +10,35 @@ $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
 
-if (isset($_GET['del_record'])) {
-  $del = $_GET['del_record'];
-  $delete_record = "DELETE FROM `records` WHERE `sr_no` = '$del'";
-  $delete_commitment = "DELETE FROM `commitments` WHERE `sr_no` = '$del'";
-  $select = $mysqli->query($delete_record) or die($mysqli->error.__LINE__);
-  $select = $mysqli->query($delete_commitment) or die($mysqli->error.__LINE__);
+if (isset($_GET['del_profile'])) {
+  $del = $_GET['del_profile'];
+  $query = "DELETE FROM `users` WHERE id = '$del'";
+  $select = $mysqli->query($query) or die($mysqli->error.__LINE__);
   if ($select) {
-    $success = 'Record deleted successfully!';
-    header('Refresh: 1; URL = school-record.php');
+    $success = 'User deleted successfully!';
+    header('Refresh: 2; URL = users.php');
   } else {
     $error = 'Query failed. Please try again later.';
   }
+}
+
+if (isset($_GET['user_info'])) {
+  $info = $_GET['user_info'];
+  $query = "SELECT * FROM `users` WHERE id = '$info'";
+  $select = $mysqli->query($query) or die($mysqli->error.__LINE__);
+  $data = mysqli_fetch_assoc($select);
+  $u_id = $data['id'];
+  $u_name = $data['name'];
+  $u_email = $data['email'];
+  $u_phone = $data['phone'];
+  $u_role = $data['role'];
+  $u_password = $data['password'];
 }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>School Records | Re-Entry Policy Tracking System</title>
+  <title>Users | Re-Entry Policy Tracking System</title>
   <!-- CSS only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="assets/css/styles.css" rel="stylesheet" type="text/css">
@@ -77,7 +88,7 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
-        <li class="bg-gold">
+        <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
         <li>
@@ -89,7 +100,7 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
-        <li>
+        <li class="bg-gold">
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
         <li>
@@ -101,62 +112,57 @@ if (isset($_GET['del_record'])) {
   <main>
     <div class="container">
       <div class="row">
+        <?php include 'snippets/manage-user.php'; ?>
+      </div>
+      <div class="row">
         <div class="col-md-12 pd-50">
-          <div class="subtitle text-capitalize">maternity leave and re-admission records</div>
           <div class="table-responsive pd-50">
             <table id="schoolRecordsTable" class="table table-striped">
               <thead>
                 <tr>
-                  <th>Sr No.</th>
-                  <th>Girl's name</th>
-                  <th>Grade</th>
-                  <th>Re-Admission</th>
-                  <th>Policy</th>
-                  <th>Commitment</th>
-                  <th>Counselling</th>
+                  <th>School name</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Email address</th>
+                  <th>Phone</th>
                   <th>Manage</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="usersTable">
                 <?php
-                $query = "SELECT * FROM `records` WHERE `sch_id` = '$sch_id'";
+                $query = "SELECT * FROM `users`";
                 $fetch = $mysqli->query($query) or die($mysqli->error.__LINE__);
                 while ($row = mysqli_fetch_assoc($fetch)) {
-                  $sr_no = $row['sr_no']; ?>
+                  $sch_id = $row['sch_id']; ?>
                   <tr>
-                    <td><?php echo $row['sr_no']; ?></td>
-                    <td><?php echo $row['g_name']; ?></td>
-                    <td><?php echo $row['g_grade']; ?></td>
-                    <td><?php echo $row['re_entry_date']; ?></td>
-                    <td><a href="maternity_leave_letter.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="printer"></i></a></td>
                     <td>
                       <?php
-                      $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
-                      $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
-                      $num_records = $select->num_rows;
-                      if ($num_records < 1) { ?>
-                        <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#commitmentModal"><i icon-name="printer"></i></a>
-                      <?php } else { ?>
-                        <a href="commitment_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="printer"></i></a>
-                      <?php } ?>
-                    </td>
+                      $sql = "SELECT `name` FROM `schools` WHERE `sch_id` = '$sch_id'";
+                $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
+                $data = mysqli_fetch_assoc($select);
+                      echo $data['name'];
+                      ?>
+                      </td>
+                    <td><?php echo $row['name']; ?></td>
                     <td>
                       <?php
-                      $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
-                      $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
-                      $num_records = $select->num_rows;
-                      if ($num_records < 1) { ?>
-                        <a href="#" class="btn disabled" data-bs-toggle="modal" data-bs-target="#commitmentModal"><i icon-name="plus-circle"></i></a>
-                      <?php } else { ?>
-                        <a href="detailed_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="plus-circle"></i></a>
-                      <?php } ?>
-                    </td>
+                      if ($row['role'] == 1) {
+                        echo 'Administrator';
+                      } else if ($row['role'] == 2) {
+                        echo 'School Manager';
+                      } else if ($row['role'] == 3) {
+                        echo 'Counsellor';
+                      }
+                      ?>
+                      </td>
+                    <td><?php echo $row['email']; ?></td>
+                    <td><?php echo $row['phone']; ?></td>
                     <td>
-                      <a href="school-record.php?del_record=<?php echo $sr_no; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
-                      <a href="add-maternity-leave.php?update_record=<?php echo $sr_no; ?>" class="btn bg-gold text-white"><i icon-name="user-cog"></i></a>
+                      <a href="users.php?del_profile=<?php echo $row['id']; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
+                      <a href="users.php?user_info=<?php echo $row['id']; ?>" class="btn btn-success"><i icon-name="user-cog"></i></a>
                     </td>
                   </tr>
-                  
+
                   <!-- Modal -->
                   <div class="modal fade" id="commitmentModal" tabindex="-1" aria-labelledby="commitmentModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -195,26 +201,17 @@ if (isset($_GET['del_record'])) {
   <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+  <script src="assets/js/states.js"></script>
   <script>
     $(document).ready( function () {
      $("#schoolRecordsTable").DataTable({
-      "order": [0, 'desc'],
+      "order": [0, 'asc'],
     });
    });
  </script>
  <!-- Lucide -->
  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
  <script src="https://unpkg.com/lucide@latest"></script>
- <script>
-  lucide.createIcons();
-</script>
-<script type="text/javascript">
-    $('.delete-info').click(function(e){
-        var result = confirm("Are you sure you want to delete this record?");
-        if(!result) {
-            e.preventDefault();
-        }
-    });
-</script>
+ <script> lucide.createIcons(); </script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <title>Reset Password | Re-Entry Policy Tracking System</title>
     <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/styles.css" rel="stylesheet">
 </head>
 <body>
@@ -18,8 +19,8 @@
                               <label for="inputEmail" class="form-label mt-4">Email address</label>
                               <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email" required>
                           </div>
-                          <p><a href="index.php">Login In</a></p>
-                          <input type="submit" name="reset" class="btn btn-primary form-control" value="Reset">
+                          <p><a href="index.php" class="text-gold">Login In</a></p>
+                          <input type="submit" name="reset" class="btn bg-gold text-white form-control" value="Reset">
                       </form>
                   </div>
               </div>

@@ -9,16 +9,17 @@ $staffId = $_SESSION['id'];
 $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
+$user = $_SESSION['name'];
 
 if (isset($_GET['del_record'])) {
   $del = $_GET['del_record'];
-  $delete_record = "DELETE FROM `records` WHERE `sr_no` = '$del'";
+  $delete_record = "DELETE FROM `commitments` WHERE `sr_no` = '$del'";
   $delete_commitment = "DELETE FROM `commitments` WHERE `sr_no` = '$del'";
   $select = $mysqli->query($delete_record) or die($mysqli->error.__LINE__);
   $select = $mysqli->query($delete_commitment) or die($mysqli->error.__LINE__);
   if ($select) {
     $success = 'Record deleted successfully!';
-    header('Refresh: 1; URL = school-record.php');
+    header('Refresh: 1; URL = commitments.php');
   } else {
     $error = 'Query failed. Please try again later.';
   }
@@ -27,7 +28,7 @@ if (isset($_GET['del_record'])) {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>School Records | Re-Entry Policy Tracking System</title>
+  <title>Commitments | Re-Entry Policy Tracking System</title>
   <!-- CSS only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="assets/css/styles.css" rel="stylesheet" type="text/css">
@@ -51,7 +52,7 @@ if (isset($_GET['del_record'])) {
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
+              <?php echo $user; ?>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="profile.php"><i icon-name="user"></i> Profile</a></li>
@@ -77,13 +78,13 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
-        <li class="bg-gold">
+        <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
         <li>
           <a href="status.php"><i icon-name="line-chart"></i> Status</a>
         </li>
-        <li>
+        <li class="bg-gold">
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
         <li>
@@ -102,7 +103,18 @@ if (isset($_GET['del_record'])) {
     <div class="container">
       <div class="row">
         <div class="col-md-12 pd-50">
-          <div class="subtitle text-capitalize">maternity leave and re-admission records</div>
+          <div class="subtitle text-capitalize">Commitment records</div>
+          <?php if (isset($success)) { ?>
+                <div class="alert alert-dismissible alert-success">
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  <strong>Well done!</strong> <?php echo $success; ?></a>
+                </div>
+              <?php } if (isset($error)) { ?>
+                <div class="alert alert-dismissible alert-danger">
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  <strong>Oh snap!</strong> <?php echo $error; ?></a>
+                </div>
+              <?php } ?>
           <div class="table-responsive pd-50">
             <table id="schoolRecordsTable" class="table table-striped">
               <thead>
@@ -110,10 +122,10 @@ if (isset($_GET['del_record'])) {
                   <th>Sr No.</th>
                   <th>Girl's name</th>
                   <th>Grade</th>
-                  <th>Re-Admission</th>
-                  <th>Policy</th>
-                  <th>Commitment</th>
+                  <th>Male</th>
                   <th>Counselling</th>
+                  <th>Status</th>
+                  <th>Report</th>
                   <th>Manage</th>
                 </tr>
               </thead>
@@ -122,20 +134,47 @@ if (isset($_GET['del_record'])) {
                 $query = "SELECT * FROM `records` WHERE `sch_id` = '$sch_id'";
                 $fetch = $mysqli->query($query) or die($mysqli->error.__LINE__);
                 while ($row = mysqli_fetch_assoc($fetch)) {
-                  $sr_no = $row['sr_no']; ?>
+                  $sr_no = $row['sr_no'];
+                  $g_guardian = $row['guardian']; ?>
                   <tr>
                     <td><?php echo $row['sr_no']; ?></td>
                     <td><?php echo $row['g_name']; ?></td>
                     <td><?php echo $row['g_grade']; ?></td>
-                    <td><?php echo $row['re_entry_date']; ?></td>
-                    <td><a href="maternity_leave_letter.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="printer"></i></a></td>
+                    <td>
+                      <?php
+                      $query = "SELECT `m_name` FROM `commitments` WHERE `sr_no` = '$sr_no'";
+                      $select = $mysqli->query($query) or die($mysqli->error.__LINE__);
+                      $data = mysqli_fetch_assoc($select);
+                      echo $name = empty($data['m_name']) ? 'No record' : $data['m_name'];
+                      ?>
+                    </td>
+                    <td>
+                      <?php
+                      $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
+                      $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
+                      $num_records = $select->num_rows;
+                      if ($num_records >= 1) { ?>
+                      <a href="#" class="btn text-gold" data-bs-toggle="modal" data-bs-target="#counsellingModal-<?php echo $row['sr_no']; ?>"><i icon-name="plus-circle"></i></a>
+                      <?php } else { echo 'No record'; } ?>
+                    </td>
                     <td>
                       <?php
                       $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
                       $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
                       $num_records = $select->num_rows;
                       if ($num_records < 1) { ?>
-                        <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#commitmentModal"><i icon-name="printer"></i></a>
+                        <a href="#" class="btn text-gold" data-bs-toggle="modal" data-bs-target="#addCommitmentModal-<?php echo $row['sr_no']; ?>"><i icon-name="plus-circle"></i></a>
+                      <?php } else { ?>
+                        <i icon-name="check-circle"></i>
+                      <?php } ?>
+                    </td>
+                    <td>
+                      <?php
+                      $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
+                      $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
+                      $num_records = $select->num_rows;
+                      if ($num_records < 1) { ?>
+                        <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#commitmentModal-<?php echo $row['sr_no']; ?>"><i icon-name="printer"></i></a>
                       <?php } else { ?>
                         <a href="commitment_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="printer"></i></a>
                       <?php } ?>
@@ -145,36 +184,20 @@ if (isset($_GET['del_record'])) {
                       $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
                       $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
                       $num_records = $select->num_rows;
-                      if ($num_records < 1) { ?>
-                        <a href="#" class="btn disabled" data-bs-toggle="modal" data-bs-target="#commitmentModal"><i icon-name="plus-circle"></i></a>
-                      <?php } else { ?>
-                        <a href="detailed_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="plus-circle"></i></a>
-                      <?php } ?>
-                    </td>
-                    <td>
-                      <a href="school-record.php?del_record=<?php echo $sr_no; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
-                      <a href="add-maternity-leave.php?update_record=<?php echo $sr_no; ?>" class="btn bg-gold text-white"><i icon-name="user-cog"></i></a>
+                      if ($num_records >= 1) { ?>
+                        <a href="commitments.php?del_record=<?php echo $sr_no; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
+                        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updateCommitmentModal-<?php echo $row['sr_no']; ?>"><i icon-name="user-cog"></i></a>
+                      <?php } else { echo 'No record'; } ?>
                     </td>
                   </tr>
-                  
-                  <!-- Modal -->
-                  <div class="modal fade" id="commitmentModal" tabindex="-1" aria-labelledby="commitmentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                          <h5 class="modal-title" id="commitmentModalLabel">Alert!</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          Commitment records not found.
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                          <a href="commitments.php?sr_no=<?php echo $row['sr_no']; ?>" class="btn bg-gold text-white">Add record</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
+                  <?php 
+                  include 'snippets/no-commitment.php';
+                  include 'snippets/add-commitment-record.php';
+                  include 'snippets/update-commitment-record.php';
+                  include 'snippets/counselling-sessions.php';
+                  ?>
+
                 <?php } ?>
               </tbody>
             </table>
@@ -208,13 +231,41 @@ if (isset($_GET['del_record'])) {
  <script>
   lucide.createIcons();
 </script>
-<script type="text/javascript">
-    $('.delete-info').click(function(e){
-        var result = confirm("Are you sure you want to delete this record?");
-        if(!result) {
-            e.preventDefault();
-        }
+
+<script>
+  $(document).ready(function() {
+    $(document).on('input', 'input[name="g_father_address"]', function() {
+      let $value = $(this).val();
+      if($('input[type="checkbox"]').is(":checked")) {
+        $(document).find('input[name="g_mother_address"]').val($value);
+      }
+    }); 
+  });
+</script>
+<script>
+  $(document).ready(function(){
+    let btnAdd = document.querySelector('.g_plus');
+    let btnSubtract = document.querySelector('#subtract');
+    let input = document.querySelector('#g_counselling');
+
+    btnAdd.addEventListener('click', () =>{
+      input.value = parseInt(input.value) + 1;
+      console.log(input);
     });
+
+    btnSubtract.addEventListener('click', () =>{
+      input.value = parseInt(input.value) - 1;
+    });
+  });
+</script>
+
+<script type="text/javascript">
+  $('.delete-info').click(function(e){
+    var result = confirm("Are you sure you want to delete this record?");
+    if(!result) {
+      e.preventDefault();
+    }
+  });
 </script>
 </body>
 </html>

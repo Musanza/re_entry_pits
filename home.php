@@ -9,6 +9,7 @@ $staffId = $_SESSION['id'];
 $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
+$user = $_SESSION['name'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,7 +33,7 @@ $username = $_SESSION['username'];
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
+              <?php echo $user; ?>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="profile.php"><i icon-name="user"></i> Profile</a></li>
@@ -63,6 +64,12 @@ $username = $_SESSION['username'];
         </li>
         <li>
           <a href="status.php"><i icon-name="line-chart"></i> Status</a>
+        </li>
+        <li>
+          <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
+        </li>
+        <li>
+          <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
         <li>
           <a href="users.php"><i icon-name="users"></i> Users</a>
@@ -99,12 +106,12 @@ $username = $_SESSION['username'];
           </a>
         </div>
         <div class="col-md-3">
-          <a href="status.php">
+          <a href="commitments.php">
           <div class="card">
-            <i icon-name="line-chart"></i> Status
+            <i icon-name="users"></i> Commitments
             <span class="badge rounded-pill text-bg-light">
             <?php
-              $query = "SELECT * FROM `records`";
+              $query = "SELECT * FROM `commitments` WHERE `sch_id` = '$sch_id'";
               $fetch = $mysqli->query($query) or die($mysqli->error.__LINE__);
               echo $num_records = $fetch->num_rows;
               ?>
@@ -113,12 +120,12 @@ $username = $_SESSION['username'];
           </a>
         </div>
         <div class="col-md-3">
-          <a href="users.php">
+          <a href="status.php">
           <div class="card">
-            <i icon-name="users"></i> Users
+            <i icon-name="line-chart"></i> Status
             <span class="badge rounded-pill text-bg-light">
             <?php
-              $query = "SELECT * FROM `users`";
+              $query = "SELECT * FROM `records`";
               $fetch = $mysqli->query($query) or die($mysqli->error.__LINE__);
               echo $num_records = $fetch->num_rows;
               ?>

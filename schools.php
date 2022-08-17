@@ -10,24 +10,37 @@ $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
 
-if (isset($_GET['del_record'])) {
-  $del = $_GET['del_record'];
-  $delete_record = "DELETE FROM `records` WHERE `sr_no` = '$del'";
-  $delete_commitment = "DELETE FROM `commitments` WHERE `sr_no` = '$del'";
-  $select = $mysqli->query($delete_record) or die($mysqli->error.__LINE__);
-  $select = $mysqli->query($delete_commitment) or die($mysqli->error.__LINE__);
+if (isset($_GET['del_profile'])) {
+  $del = $_GET['del_profile'];
+  $query = "DELETE FROM `schools` WHERE id = '$del'";
+  $select = $mysqli->query($query) or die($mysqli->error.__LINE__);
   if ($select) {
-    $success = 'Record deleted successfully!';
-    header('Refresh: 1; URL = school-record.php');
+    $success = 'School deleted successfully!';
+    header('Refresh: 2; URL = schools.php');
   } else {
     $error = 'Query failed. Please try again later.';
   }
 }
+
+if (isset($_GET['school_info'])) {
+  $info = $_GET['school_info'];
+  $query = "SELECT * FROM `schools` WHERE id = '$info'";
+  $select = $mysqli->query($query) or die($mysqli->error.__LINE__);
+  $data = mysqli_fetch_assoc($select);
+  $u_id = $data['id'];
+  $u_name = $data['name'];
+  $u_district = $data['district'];
+  $u_province = $data['province'];
+  $u_tel = $data['tel'];
+  $u_type = $data['type'];
+  $u_address = $data['address'];
+}
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>School Records | Re-Entry Policy Tracking System</title>
+  <title>Schools | Re-Entry Policy Tracking System</title>
   <!-- CSS only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="assets/css/styles.css" rel="stylesheet" type="text/css">
@@ -77,7 +90,7 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
-        <li class="bg-gold">
+        <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
         <li>
@@ -86,7 +99,7 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
-        <li>
+        <li class="bg-gold">
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
         <li>
@@ -101,62 +114,44 @@ if (isset($_GET['del_record'])) {
   <main>
     <div class="container">
       <div class="row">
+        <?php include 'snippets/manage-school.php'; ?>
+      </div>
+      <div class="row">
         <div class="col-md-12 pd-50">
-          <div class="subtitle text-capitalize">maternity leave and re-admission records</div>
           <div class="table-responsive pd-50">
             <table id="schoolRecordsTable" class="table table-striped">
               <thead>
                 <tr>
-                  <th>Sr No.</th>
-                  <th>Girl's name</th>
-                  <th>Grade</th>
-                  <th>Re-Admission</th>
-                  <th>Policy</th>
-                  <th>Commitment</th>
-                  <th>Counselling</th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>District</th>
+                  <th>Province</th>
+                  <th>Address</th>
+                  <th>Tel</th>
+                  <th>Type</th>
                   <th>Manage</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="schoolsTable">
                 <?php
-                $query = "SELECT * FROM `records` WHERE `sch_id` = '$sch_id'";
+                $query = "SELECT * FROM `schools`";
                 $fetch = $mysqli->query($query) or die($mysqli->error.__LINE__);
                 while ($row = mysqli_fetch_assoc($fetch)) {
-                  $sr_no = $row['sr_no']; ?>
+                  $sch_id = $row['sch_id']; ?>
                   <tr>
-                    <td><?php echo $row['sr_no']; ?></td>
-                    <td><?php echo $row['g_name']; ?></td>
-                    <td><?php echo $row['g_grade']; ?></td>
-                    <td><?php echo $row['re_entry_date']; ?></td>
-                    <td><a href="maternity_leave_letter.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="printer"></i></a></td>
+                  <td><?php echo $row['sch_id']; ?></td>
+                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo ucwords($row['district']); ?></td>
+                    <td><?php echo ucwords($row['province']); ?></td>
+                    <td><?php echo ucwords($row['address']); ?></td>
+                    <td><?php echo $row['tel']; ?></td>
+                    <td><?php echo $row['type']; ?></td>
                     <td>
-                      <?php
-                      $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
-                      $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
-                      $num_records = $select->num_rows;
-                      if ($num_records < 1) { ?>
-                        <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#commitmentModal"><i icon-name="printer"></i></a>
-                      <?php } else { ?>
-                        <a href="commitment_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="printer"></i></a>
-                      <?php } ?>
-                    </td>
-                    <td>
-                      <?php
-                      $sql = "SELECT * FROM `commitments` WHERE `sr_no` = '$sr_no'";
-                      $select = $mysqli->query($sql) or die($mysqli->error.__LINE__);
-                      $num_records = $select->num_rows;
-                      if ($num_records < 1) { ?>
-                        <a href="#" class="btn disabled" data-bs-toggle="modal" data-bs-target="#commitmentModal"><i icon-name="plus-circle"></i></a>
-                      <?php } else { ?>
-                        <a href="detailed_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="plus-circle"></i></a>
-                      <?php } ?>
-                    </td>
-                    <td>
-                      <a href="school-record.php?del_record=<?php echo $sr_no; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
-                      <a href="add-maternity-leave.php?update_record=<?php echo $sr_no; ?>" class="btn bg-gold text-white"><i icon-name="user-cog"></i></a>
+                      <a href="schools.php?del_profile=<?php echo $row['id']; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
+                      <a href="schools.php?school_info=<?php echo $row['id']; ?>" class="btn btn-success"><i icon-name="user-cog"></i></a>
                     </td>
                   </tr>
-                  
+
                   <!-- Modal -->
                   <div class="modal fade" id="commitmentModal" tabindex="-1" aria-labelledby="commitmentModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -195,22 +190,21 @@ if (isset($_GET['del_record'])) {
   <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+  <script src="assets/js/states.js"></script>
   <script>
     $(document).ready( function () {
      $("#schoolRecordsTable").DataTable({
-      "order": [0, 'desc'],
+      "order": [0, 'asc'],
     });
    });
  </script>
  <!-- Lucide -->
  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
  <script src="https://unpkg.com/lucide@latest"></script>
- <script>
-  lucide.createIcons();
-</script>
-<script type="text/javascript">
-    $('.delete-info').click(function(e){
-        var result = confirm("Are you sure you want to delete this record?");
+ <script> lucide.createIcons(); </script>
+ <script type="text/javascript">
+    $('.btn-danger').click(function(e){
+        var result = confirm("Are you sure you want to delete this school?");
         if(!result) {
             e.preventDefault();
         }

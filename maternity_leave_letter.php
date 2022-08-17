@@ -53,7 +53,7 @@ $pdf->Ln(10);
 $pdf->SetFont('Times','',12);
 $pdf->MultiCell(0,5,'This serves to inform you that the school has granted you maternity leave from '.date_format($issue_date, "F j, Y").' to '.date_format($re_entry_date, "F j, Y").'.');
 $pdf->Ln(10);
-$pdf->MultiCell(0,5,'You will be required to report for classes on '.date_format($re_entry_date, "F j, Y").' at -07:30 hrs.');
+$pdf->MultiCell(0,5,'You will be required to report for classes on '.date_format($re_entry_date, "F j, Y").' at 07:30 hrs.');
 $pdf->Ln(10);
 $pdf->MultiCell(0,5,'Please note that disciplinary action will be taken against you if you fail to report on the stated date.');
 $pdf->Ln(15);
@@ -64,7 +64,7 @@ $pdf->Cell(0,5,$row['manager']);
 $pdf->Ln(5);
 $pdf->SetFont('Times','B',12);
 $pdf->Ln(5);
-$pdf->Cell(0,5,'School Headteacher');
+$pdf->Cell(0,5,'School Manager');
 $pdf->Ln(5);
 $pdf->Cell(0,5,date('F j, Y'));
 
