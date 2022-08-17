@@ -56,9 +56,11 @@ $user = $_SESSION['name'];
         <li  class="bg-gold">
           <a href="home.php"><i icon-name="menu"></i> Home</a>
         </li>
+        <?php if ($role == 2) { ?>
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
+      <?php } ?>
         <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
@@ -68,12 +70,15 @@ $user = $_SESSION['name'];
         <li>
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
+        <?php if ($role == 1) { ?>
         <li>
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
+      <?php } if ($role < 3) { ?>
         <li>
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
+      <?php } ?>
         <li>
           <a href="logout.php"><i icon-name="log-out"></i> Logout</a>
         </li>
@@ -83,6 +88,7 @@ $user = $_SESSION['name'];
   <main id="account">
     <div class="container">
       <div class="row">
+        <?php if ($role == 2) { ?>
         <div class="col-md-3">
           <a href="add-maternity-leave.php">
           <div class="card">
@@ -91,6 +97,7 @@ $user = $_SESSION['name'];
           </div>
           </a>
         </div>
+      <?php } ?>
         <div class="col-md-3">
           <a href="school-record.php">
           <div class="card">

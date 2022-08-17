@@ -9,6 +9,7 @@ $staffId = $_SESSION['id'];
 $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
+$user = $_SESSION['name'];
 
 if (isset($_GET['del_record'])) {
   $del = $_GET['del_record'];
@@ -51,7 +52,7 @@ if (isset($_GET['del_record'])) {
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
+              <?php echo $user; ?>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="profile.php"><i icon-name="user"></i> Profile</a></li>
@@ -74,9 +75,11 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="home.php"><i icon-name="menu"></i> Home</a>
         </li>
+        <?php if ($role == 2) { ?>
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
+      <?php } ?>
         <li class="bg-gold">
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
@@ -86,12 +89,15 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
+        <?php if ($role == 1) { ?>
         <li>
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
+      <?php } if ($role < 3) { ?>
         <li>
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
+      <?php } ?>
         <li>
           <a href="logout.php"><i icon-name="log-out"></i> Logout</a>
         </li>
@@ -114,7 +120,9 @@ if (isset($_GET['del_record'])) {
                   <th>Policy</th>
                   <th>Commitment</th>
                   <th>Counselling</th>
+                  <?php if ($role < 3) { ?>
                   <th>Manage</th>
+                <?php } ?>
                 </tr>
               </thead>
               <tbody>
@@ -151,10 +159,12 @@ if (isset($_GET['del_record'])) {
                         <a href="detailed_report.php?sr_no=<?php echo $row['sr_no']; ?>" target="blank" class="btn"><i icon-name="plus-circle"></i></a>
                       <?php } ?>
                     </td>
+                    <?php if ($role < 3) { ?>
                     <td>
                       <a href="school-record.php?del_record=<?php echo $sr_no; ?>" class="btn btn-danger delete-info"><i icon-name="user-x"></i></a>
                       <a href="add-maternity-leave.php?update_record=<?php echo $sr_no; ?>" class="btn bg-gold text-white"><i icon-name="user-cog"></i></a>
                     </td>
+                  <?php } ?>
                   </tr>
                   
                   <!-- Modal -->

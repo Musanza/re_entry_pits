@@ -9,6 +9,7 @@ $staffId = $_SESSION['id'];
 $sch_id = $_SESSION['sch_id'];
 $role = $_SESSION['role'];
 $username = $_SESSION['username'];
+$user = $_SESSION['name'];
 
 if (isset($_GET['update_record'])) {
   $info = $_GET['update_record'];
@@ -45,7 +46,7 @@ if (isset($_GET['update_record'])) {
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
+              <?php echo $user ?>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="profile.php"><i icon-name="user"></i> Profile</a></li>
@@ -68,9 +69,11 @@ if (isset($_GET['update_record'])) {
         <li>
           <a href="home.php"><i icon-name="menu"></i> Home</a>
         </li>
+        <?php if ($role == 2) { ?>
         <li class="bg-gold">
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
+      <?php } ?>
         <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
@@ -80,12 +83,15 @@ if (isset($_GET['update_record'])) {
         <li>
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
+        <?php if ($role == 1) { ?>
         <li>
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
+      <?php } if ($role < 3) { ?>
         <li>
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
+      <?php } ?>
         <li>
           <a href="logout.php"><i icon-name="log-out"></i> Logout</a>
         </li>

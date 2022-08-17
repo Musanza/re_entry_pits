@@ -85,9 +85,11 @@ if (isset($_GET['user_info'])) {
         <li>
           <a href="home.php"><i icon-name="menu"></i> Home</a>
         </li>
+        <?php if ($role == 2) { ?>
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
+      <?php } ?>
         <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
@@ -97,12 +99,15 @@ if (isset($_GET['user_info'])) {
         <li>
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
+        <?php if ($role == 1) { ?>
         <li>
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
+      <?php } if ($role < 3) { ?>
         <li class="bg-gold">
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
+      <?php } ?>
         <li>
           <a href="logout.php"><i icon-name="log-out"></i> Logout</a>
         </li>
@@ -130,7 +135,11 @@ if (isset($_GET['user_info'])) {
               </thead>
               <tbody id="usersTable">
                 <?php
+                if ($role == 1) {
                 $query = "SELECT * FROM `users`";
+              } else {
+                $query = "SELECT * FROM `users` WHERE `sch_id` = '$sch_id'"; 
+              }
                 $fetch = $mysqli->query($query) or die($mysqli->error.__LINE__);
                 while ($row = mysqli_fetch_assoc($fetch)) {
                   $sch_id = $row['sch_id']; ?>

@@ -75,9 +75,11 @@ if (isset($_GET['del_record'])) {
         <li>
           <a href="home.php"><i icon-name="menu"></i> Home</a>
         </li>
+        <?php if ($role == 2) { ?>
         <li>
           <a href="add-maternity-leave.php"><i icon-name="contact"></i> Maternity Leave</a>
         </li>
+      <?php } ?>
         <li>
           <a href="school-record.php"><i icon-name="clipboard"></i> School Record</a>
         </li>
@@ -87,12 +89,15 @@ if (isset($_GET['del_record'])) {
         <li class="bg-gold">
           <a href="commitments.php"><i icon-name="users"></i> Commitments</a>
         </li>
+        <?php if ($role == 1) { ?>
         <li>
           <a href="schools.php"><i icon-name="building-2"></i> Schools</a>
         </li>
+      <?php } if ($role < 3) { ?>
         <li>
           <a href="users.php"><i icon-name="users"></i> Users</a>
         </li>
+      <?php } ?>
         <li>
           <a href="logout.php"><i icon-name="log-out"></i> Logout</a>
         </li>
