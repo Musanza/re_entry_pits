@@ -52,13 +52,13 @@ CREATE TABLE `commitments` (
   `date_transfer` varchar(15) NOT NULL DEFAULT 'NA',
   `actual_re_entry` varchar(15) NOT NULL DEFAULT 'NA',
   `transfered_sch` varchar(50) NOT NULL DEFAULT 'NA',
-  `transfer_reason` text NOT NULL DEFAULT 'NA',
+  `transfer_reason` text NOT NULL,
   `m_p_address` varchar(50) NOT NULL DEFAULT 'NA',
   `m_place_work` varchar(50) NOT NULL DEFAULT 'NA',
   `g_counselling_sessions` int(5) NOT NULL DEFAULT 0,
   `m_counselling_sessions` int(5) NOT NULL DEFAULT 0,
   `p_counselling_sessions` int(5) NOT NULL DEFAULT 0,
-  `other_info` text NOT NULL DEFAULT 'None'
+  `other_info` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
